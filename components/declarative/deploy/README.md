@@ -1,0 +1,1 @@
+Define cómo se construye y se ejecuta el componente declarative: entorno con versiones fijadas, imagen, insumos que toma de `legacy/` y parches que aplica (ver `docs/baseline/`). La imagen es la herramienta: no usa Docker dentro de Docker. La sección "Despliegue" de `../agent/capabilities.md` es la fuente de lo que va aquí.
