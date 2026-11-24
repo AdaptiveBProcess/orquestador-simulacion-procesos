@@ -1,4 +1,4 @@
-﻿diff --git a/model_prediction/event_log_predictor.py b/model_prediction/event_log_predictor.py
+diff --git a/model_prediction/event_log_predictor.py b/model_prediction/event_log_predictor.py
 index 8f3f3e2..812a3d7 100644
 --- a/model_prediction/event_log_predictor.py
 +++ b/model_prediction/event_log_predictor.py
