@@ -8,7 +8,7 @@
 | 2 | Línea base del sistema original | Hecho, con salvedad: BIMP no produce resultados (`docs/baseline/BASELINE.md`) |
 | 3 | Vocabulario y catálogo de artefactos | Hecho (`shared/contracts/artifact-catalog.md`) |
 | 4 | Contrato de tarea | Hecho (`shared/contracts/task-contract.md`) |
-| 5 | Esqueleto de carpetas y repo (incluye `shared/runtime` e `infra/`) | En curso: crear el repo con este contenido |
+| 5 | Esqueleto de carpetas y repo (incluye `shared/runtime` e `infra/`) | Hecho |
 | 6 | Capa de datos mínima (respaldo local), elección del transporte, cascarón de servicio (`shared/runtime`) y composición local (`infra/`) | Pendiente |
 | 7 | Extraer componentes, del más simple al más pesado | Pendiente |
 | 8 | Orquestación: primero sin chat, luego capa conversacional | Pendiente |
