@@ -19,6 +19,8 @@ Corrida de referencia de Declarative Process Simulation, ejecutada el 22-23 de n
 
 **Equivalentes a lo que ya trae la referencia** (no son parches propios): imagen base del JDK en el `Dockerfile`; eliminación de `root_path` en la llamada a `ModelPredictor` (el constructor del submódulo fijado no lo acepta); `FILENAME` de `dg_training.py` apuntando al log de ejemplo; copia de `configuration.yaml` para Simod cuando falta.
 
+"Los parches se aplican con git apply --ignore-whitespace, porque los saltos de línea del código original varían según la plataforma de checkout".
+
 **Parches propios** (se guardan como `.diff` en esta carpeta):
 
 | ID | Archivo | Cambio | Efecto |
