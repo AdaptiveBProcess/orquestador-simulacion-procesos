@@ -19,3 +19,10 @@ Un cambio de commit en `legacy/` implica repetir la comparación contra `docs/ba
 ## Cómo lo usan los componentes
 
 Ninguna imagen copia `legacy/` completo. Cada `components/<x>/deploy/` declara los archivos que toma de aquí (por ejemplo, solo el jar de BIMP y no los 310 MB de `external_tools/`) y los parches que aplica. El código original asume rutas relativas al directorio de ejecución (por ejemplo `GenerativeLSTM/models_spec.ini`), así que la imagen del componente debe reproducir esa disposición.
+
+## Windows: rutas largas
+
+El submódulo GenerativeLSTM contiene archivos de prueba con nombres muy largos
+(input_files/tests/...). En Windows el clonado falla con "Filename too long".
+Antes de clonar: git config --global core.longpaths true
+Si persiste, activar LongPathsEnabled en Windows o clonar en una ruta corta.

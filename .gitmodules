@@ -1,0 +1,3 @@
+[submodule "legacy/DeclarativeProcessSimulation"]
+	path = legacy/DeclarativeProcessSimulation
+	url = https://github.com/DavidCepeda13/DeclarativeProcessSimulation.git
