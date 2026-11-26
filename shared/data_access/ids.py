@@ -15,7 +15,7 @@ _PATTERNS = dict(
 def new_id(kind, now=None):
     """Genera un identificador nuevo del tipo indicado (run, task o art)."""
     if kind not in KINDS:
-        raise ValueError("tipo de identificador desconocido: %r" % (kind,))
+        raise ValueError(f"tipo de identificador desconocido: {kind}")
     moment = now or datetime.now(timezone.utc)
     return "%s_%s_%s" % (kind, moment.strftime("%Y%m%dT%H%M%SZ"), secrets.token_hex(4))
 

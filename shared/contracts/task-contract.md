@@ -7,6 +7,7 @@ Mensaje común para pedirle trabajo a cualquier componente y recibir su resultad
 | Campo | Contenido |
 |---|---|
 | `run_id` | Corrida a la que pertenece |
+| `task_id` | Tarea a la que pertenece |
 | `task` | Capacidad pedida (por ejemplo, `predictor.generar_log`) |
 | `inputs` | Referencias a artefactos del catálogo, nunca rutas. una referencia es el par `(run_id, artifact_id)`; ver identifiers.md |
 | `params` | Solo los que el componente declara, cada uno con su valor por defecto |
@@ -42,6 +43,7 @@ Las tareas largas (el entrenamiento tardó más de 15 minutos) se piden de forma
 4. **Un reintento es una tarea nueva** dentro de la misma corrida. Los artefactos de la anterior se conservan marcados.
 5. **Las rutas no viajan.** Un componente obtiene los bytes de un artefacto por `shared/data_access` y entrega los suyos igual.
 6. **Las marcas de tiempo son UTC.**
+7. **Una tarea parcial significa algo concreto**: todas las salidas requeridas existen, pero el adaptador declaró alguna como parcial. Si falta una requerida o una queda inutilizable, la tarea es fallida.
 
 ## Una corrida, varias tareas
 

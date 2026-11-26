@@ -1,0 +1,5 @@
+# Solo `shared/` entra al contexto de construcción (legacy/, docs/, datos, etc. no).
+*
+!shared
+**/__pycache__
+**/*.pyc

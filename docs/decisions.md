@@ -61,6 +61,7 @@ Formato: decisión, motivo y consecuencias. Fecha de la última revisión: 2026-
 ### D13. Transporte: HTTP con tareas asíncronas
 - Decisión: cada componente expone un servicio HTTP: enviar tarea, consultar estado, ficha de capacidades y salud.
 - Motivo: es lo más simple que cumple el contrato. shared/runtime lo oculta al adaptador, así que pasar a una cola más adelante no obliga a reescribir componentes.
+- Runtime.shutdown acepta cancel_pending.
 
 ### D14. Respaldo de datos: disco local primero
 - Decisión: shared/data_access guarda en local_store/ con la interfaz definitiva (guardar, obtener, listar, cambiar estado).
@@ -81,6 +82,18 @@ Disposición, escritura segura y materialización por copia en shared/data_acces
 ### D19. Validación por registro de tipos
 Las reglas de metadatos se validan en código a partir de shared/contracts/artifact-types.json; sin JSON Schema por ahora.
 
+### D20. Motor del runtime 
+Modelo de tareas, estados, verificación de salidas y reinicio en shared/runtime/README.md
+
+### D21. Interfaz HTTP
+Biblioteca estándar, cuatro rutas, errores en JSON y apagado ordenado; ver shared/runtime/HTTP.md
+
+### D22. Componentes de ejemplo
+Productor y consumidor en shared/runtime/examples/, fuera de components/, para validar el contrato; los modos de fallo reproducen casos de la línea base (BIMP, Simod, caída del proceso)
+
+### D23. Composición local
+Un contenedor por servicio, volumen con nombre para el almacén (no carpeta de Windows montada), usuario sin privilegios, puertos solo en 127.0.0.1; ver infra/local/README.md
+
 ## Abiertas
 
 | Tema | Se decide en |
@@ -95,3 +108,4 @@ Las reglas de metadatos se validan en código a partir de shared/contracts/artif
 | Versiones fijadas del entorno de TensorFlow | Paso 7 (trainer y predictor) |
 | Por qué la generación produjo 76 casos y no ~101 | Paso 7 (predictor); ver `docs/baseline/BASELINE.md` |
 | Autenticación entre componentes | sin ella por ahora, porque todo corre en local; se decide cuando haya componentes en máquinas distintas |
+| Tiempo parada de Contenedores | Tiempo de espera de parada de los contenedores de entrenamiento (docker stop), paso 6.8 |

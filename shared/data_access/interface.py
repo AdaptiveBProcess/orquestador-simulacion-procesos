@@ -38,3 +38,31 @@ class ArtifactStore(ABC):
     @abstractmethod
     def cambiar_estado(self, ref, status, status_reason=None):
         """Cambia solo status y status_reason; devuelve los metadatos nuevos."""
+
+    # ---- carpeta de trabajo de la tarea --------------------------------------
+
+    @abstractmethod
+    def carpeta_trabajo(self, run_id, task_id):
+        """Crea work/<task_id>/{in,out} y devuelve la ruta de la carpeta de trabajo."""
+
+    @abstractmethod
+    def eliminar_trabajo(self, run_id, task_id):
+        """Borra la carpeta de trabajo de la tarea."""
+
+    # ---- registro de tareas ---------------------------------------------------
+
+    @abstractmethod
+    def crear_tarea(self, run_id, task_id, record):
+        """Crea el registro de la tarea. Lanza ConflictError si ya existe."""
+
+    @abstractmethod
+    def leer_tarea(self, task_id, run_id=None):
+        """Devuelve el registro de la tarea, o None. Sin run_id, la busca en todas las corridas."""
+
+    @abstractmethod
+    def actualizar_tarea(self, record):
+        """Reemplaza el registro existente (usa record['run_id'] y record['task_id'])."""
+
+    @abstractmethod
+    def listar_tareas(self, run_id=None, *, component=None, states=None):
+        """Registros de tareas, de una corrida o de todas, con filtros opcionales."""

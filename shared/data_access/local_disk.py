@@ -34,7 +34,7 @@ class LocalDiskStore(ArtifactStore):
         self._root = Path(chosen).expanduser().resolve()
         self._registry = load_registry(registry_path)
 
-    # ---- utilidades internas -------------------------------------------------
+    # ---- métodos internos -------------------------------------------------
 
     def _require_id(self, kind, value):
         if not is_valid_id(kind, value):
@@ -60,25 +60,33 @@ class LocalDiskStore(ArtifactStore):
             with open(str(path), encoding="utf-8") as handle:
                 return json.load(handle)
         except ValueError as exc:
-            raise IntegrityError("metadato ilegible en %s" % artifact_id, [artifact_id]) from exc
+            raise IntegrityError(f"metadato ilegible en {artifact_id}", [artifact_id]) from exc
         except OSError as exc:
-            raise BackendUnavailable("no se pudo leer el metadato: %s" % exc.__class__.__name__) from exc
+            raise BackendUnavailable(f"no se pudo leer el metadato: {exc.__class__.__name__}") from exc
+
+    def _write_tmp(self, path, data):
+        tmp = path.with_name(path.name + ".tmp-" + secrets.token_hex(4))
+        with open(str(tmp), "w", encoding="utf-8", newline="\n") as handle:
+            json.dump(data, handle, ensure_ascii=False, indent=2, sort_keys=True)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        return tmp
+
+    def _discard_tmp(self, tmp):
+        try:
+            if tmp is not None and tmp.exists():
+                tmp.unlink()
+        except OSError:
+            pass
 
     def _write_json_atomic(self, path, data):
-        tmp = path.with_name(path.name + ".tmp-" + secrets.token_hex(4))
+        tmp = None
         try:
-            with open(str(tmp), "w", encoding="utf-8", newline="\n") as handle:
-                json.dump(data, handle, ensure_ascii=False, indent=2, sort_keys=True)
-                handle.write("\n")
-                handle.flush()
-                os.fsync(handle.fileno())
+            tmp = self._write_tmp(path, data)
             os.replace(str(tmp), str(path))
         finally:
-            if tmp.exists():
-                try:
-                    tmp.unlink()
-                except OSError:
-                    pass
+            self._discard_tmp(tmp)
 
     # ---- operaciones ---------------------------------------------------------
 
@@ -244,3 +252,80 @@ class LocalDiskStore(ArtifactStore):
                 shutil.rmtree(str(work))
         except OSError as exc:
             raise BackendUnavailable("no se pudo borrar la carpeta de trabajo: %s" % exc.__class__.__name__) from exc
+
+    # ---- registro de tareas ---------------------------------------------------
+
+    def _task_path(self, run_id, task_id):
+        return self._root / run_id / "tasks" / (task_id + ".json")
+
+    def crear_tarea(self, run_id, task_id, record):
+        self._require_id("run", run_id)
+        self._require_id("task", task_id)
+        path = self._task_path(run_id, task_id)
+        tmp = None
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            tmp = self._write_tmp(path, record)
+            os.link(str(tmp), str(path))  # falla si ya existe: creación exclusiva y atómica
+        except FileExistsError as exc:
+            raise ConflictError("la tarea %s ya existe" % task_id) from exc
+        except OSError as exc:
+            raise BackendUnavailable("no se pudo crear la tarea: %s" % exc.__class__.__name__) from exc
+        finally:
+            self._discard_tmp(tmp)
+
+    def leer_tarea(self, task_id, run_id=None):
+        self._require_id("task", task_id)
+        if run_id is not None:
+            self._require_id("run", run_id)
+            candidates = [run_id]
+        else:
+            try:
+                names = sorted(os.listdir(str(self._root))) if self._root.is_dir() else []
+            except OSError as exc:
+                raise BackendUnavailable("no se pudo listar: %s" % exc.__class__.__name__) from exc
+            candidates = [name for name in names if is_valid_id("run", name)]
+        for candidate in candidates:
+            path = self._task_path(candidate, task_id)
+            if path.is_file():
+                return self._read_json(path, task_id)
+        return None
+
+    def actualizar_tarea(self, record):
+        run_id, task_id = record.get("run_id"), record.get("task_id")
+        self._require_id("run", run_id)
+        self._require_id("task", task_id)
+        path = self._task_path(run_id, task_id)
+        if not path.is_file():
+            raise ArtifactNotFound("no existe la tarea %s" % task_id)
+        try:
+            self._write_json_atomic(path, record)
+        except OSError as exc:
+            raise BackendUnavailable("no se pudo actualizar la tarea: %s" % exc.__class__.__name__) from exc
+
+    def listar_tareas(self, run_id=None, *, component=None, states=None):
+        if run_id is not None:
+            self._require_id("run", run_id)
+            runs = [run_id]
+        else:
+            try:
+                names = sorted(os.listdir(str(self._root))) if self._root.is_dir() else []
+            except OSError as exc:
+                raise BackendUnavailable("no se pudo listar: %s" % exc.__class__.__name__) from exc
+            runs = [name for name in names if is_valid_id("run", name)]
+        found = []
+        for run in runs:
+            base = self._root / run / "tasks"
+            if not base.is_dir():
+                continue
+            for name in sorted(os.listdir(str(base))):
+                if not name.endswith(".json") or not is_valid_id("task", name[:-5]):
+                    continue
+                record = self._read_json(base / name, name[:-5])
+                if component is not None and record.get("component") != component:
+                    continue
+                if states is not None and record.get("status") not in states:
+                    continue
+                found.append(record)
+        found.sort(key=lambda r: (r.get("created_at", ""), r.get("task_id", "")))
+        return found

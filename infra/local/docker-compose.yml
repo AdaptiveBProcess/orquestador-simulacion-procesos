@@ -1,0 +1,36 @@
+# Composición local de los servicios de ejemplo (paso 6.8).
+# Uso, desde la raíz del repo:
+#   docker compose -f infra/local/docker-compose.yml up --build -d
+name: orq-local
+
+x-examples: &examples
+  build:
+    context: ../..
+    dockerfile: shared/runtime/examples/Dockerfile
+    args:
+      PYTHON_VERSION: ${PYTHON_VERSION:-3.9}
+  image: orq-examples:local
+  volumes:
+    - store:/data/store
+  stop_grace_period: ${ORQ_STOP_GRACE:-30s}
+  healthcheck:
+    test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+    interval: 5s
+    timeout: 5s
+    retries: 5
+    start_period: 5s
+
+services:
+  producer:
+    <<: *examples
+    command: ["python", "-m", "shared.runtime.examples.producer"]
+    ports:
+      - "127.0.0.1:8001:8000"
+  consumer:
+    <<: *examples
+    command: ["python", "-m", "shared.runtime.examples.consumer"]
+    ports:
+      - "127.0.0.1:8002:8000"
+
+volumes:
+  store:

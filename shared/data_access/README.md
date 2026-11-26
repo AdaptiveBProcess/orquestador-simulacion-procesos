@@ -60,6 +60,19 @@ Los nombres son cortos a propósito (límite de rutas de Windows). La **raíz de
 
 `obtener` recibe el `run_id` de la tarea porque un artefacto de otra corrida debe materializarse en la carpeta de trabajo de la tarea, no en la de su corrida de origen.
 
+## Registro de tareas
+
+El runtime guarda aquí el estado de cada tarea, en `tasks/<task_id>.json`, para que sobreviva a un reinicio y para detectar solicitudes repetidas.
+
+| Operación | Qué hace |
+|---|---|
+| `crear_tarea(run_id, task_id, record)` | Creación exclusiva y atómica; `ConflictError` si ya existe |
+| `leer_tarea(task_id, run_id=None)` | Devuelve el registro o `None`; sin `run_id` busca en todas las corridas |
+| `actualizar_tarea(record)` | Reemplaza el registro de forma atómica |
+| `listar_tareas(run_id=None, component=None, states=None)` | Lista registros con filtros opcionales |
+
+Los backends deben implementar también las dos utilidades de la carpeta de trabajo.
+
 ## Errores
 
 Cada uno es un error con tipo propio, que el runtime convierte en un error de tarea:
