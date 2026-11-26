@@ -35,3 +35,4 @@
 - **Toma de `legacy/`:** el jar `GenerativeLSTM/external_tools/bimp/qbp-simulator-engine.jar` (solo ese archivo) y la lógica de `bimp_parser`.
 - **Parches:** ninguno.
 - **Nota:** las rutas dentro del contenedor las define el contrato, lo que debería eliminar el fallo de la línea base.
+- La imagen no trae Python; se instalará para el cascarón (paso 7).

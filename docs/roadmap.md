@@ -9,7 +9,7 @@
 | 3 | Vocabulario y catálogo de artefactos | Hecho (`shared/contracts/artifact-catalog.md`) |
 | 4 | Contrato de tarea | Hecho (`shared/contracts/task-contract.md`) |
 | 5 | Esqueleto de carpetas y repo (incluye `shared/runtime` e `infra/`) | Hecho |
-| 6 | Capa de datos mínima (respaldo local), elección del transporte, cascarón de servicio (`shared/runtime`) y composición local (`infra/`) | Pendiente |
+| 6 | Capa de datos mínima (respaldo local), elección del transporte, cascarón de servicio (`shared/runtime`) y composición local (`infra/`) | En curso |
 | 7 | Extraer componentes, del más simple al más pesado | Pendiente |
 | 8 | Orquestación: primero sin chat, luego capa conversacional | Pendiente |
 

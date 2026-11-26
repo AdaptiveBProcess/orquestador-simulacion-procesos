@@ -11,25 +11,15 @@ Todo lo que un componente consume o produce es un **artefacto** registrado, y se
 - **Registro:** el índice que dice qué artefactos existen y dónde están sus bytes.
 
 ## Metadatos obligatorios
-
-| Campo | Contenido |
-|---|---|
-| `artifact_id` | Identificador único |
-| `type` | Tipo del catálogo, con prefijo de dominio (`declarative.*`) |
-| `run_id` / `task_id` | Corrida y tarea que lo produjo |
-| `depends_on` | Artefactos de los que se derivó (por ejemplo, el AS-IS usado en una fusión) |
-| `log_name` | Proyecto/log al que pertenece |
-| `scenario` | `AS-IS` o `TO-BE`, cuando aplica |
-| `rule` / `variant` | Regla (ruta y variación) y variante de generación, cuando aplican |
-| `created_at` | UTC |
-| `status` | `completo`, `parcial` o `fallido` |
-
 Los artefactos de tareas fallidas se registran con su estado; no se descartan.
+La información a detalle del artefacto se puede encontrar en artifact-metadata.md
 
 ## Catálogo inicial
 
 | Tipo | Archivos reales | Productor | Consumidores |
 |---|---|---|---|
+| `example.note` | `note.txt` | Productor de ejemplo | Consumidor de ejemplo |
+| `example.report` | `report.txt` | Consumidor de ejemplo | Informativo |
 | `declarative.event_log` | `<log>.csv` y `.csv.gz` | Usuario | Trainer, Simod |
 | `declarative.rules` | `rules.ini` (regla y variación) | Usuario / Declarative | Predictor |
 | `declarative.embeddings` | `ac_*.emb`, `rl_*.emb` | Trainer | Trainer (caché) |

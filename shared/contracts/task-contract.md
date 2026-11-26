@@ -8,8 +8,9 @@ Mensaje común para pedirle trabajo a cualquier componente y recibir su resultad
 |---|---|
 | `run_id` | Corrida a la que pertenece |
 | `task` | Capacidad pedida (por ejemplo, `predictor.generar_log`) |
-| `inputs` | Referencias a artefactos del catálogo, nunca rutas |
+| `inputs` | Referencias a artefactos del catálogo, nunca rutas. una referencia es el par `(run_id, artifact_id)`; ver identifiers.md |
 | `params` | Solo los que el componente declara, cada uno con su valor por defecto |
+| `retry_of` | opcional: task_id de la tarea que se reintenta |
 
 Ejemplo:
 

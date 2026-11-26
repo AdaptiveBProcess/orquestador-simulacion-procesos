@@ -58,6 +58,29 @@ Formato: decisión, motivo y consecuencias. Fecha de la última revisión: 2026-
 - **Motivo:** `legacy/` pesa mucho (`external_tools/`, unos 310 MB, de los que solo se usa un jar) y el código original asume rutas relativas al directorio de ejecución.
 - **Consecuencias:** el contexto de construcción de cada imagen se limita a lo declarado. Los parches P1 y P2 solo entran en la imagen del predictor.
 
+### D13. Transporte: HTTP con tareas asíncronas
+- Decisión: cada componente expone un servicio HTTP: enviar tarea, consultar estado, ficha de capacidades y salud.
+- Motivo: es lo más simple que cumple el contrato. shared/runtime lo oculta al adaptador, así que pasar a una cola más adelante no obliga a reescribir componentes.
+
+### D14. Respaldo de datos: disco local primero
+- Decisión: shared/data_access guarda en local_store/ con la interfaz definitiva (guardar, obtener, listar, cambiar estado).
+- Motivo: sirve para desarrollo y para validar el contrato; un respaldo accesible entre máquinas se agrega después sin cambiar la interfaz.
+
+### D15. Python mínimo de shared/: 3.9. 
+shared/ no puede usar sintaxis ni librerías que exijan una versión más nueva. Debe tener pocas dependencias, porque se instalará dentro de entornos de TensorFlow ya fijados.
+
+### D16. Identificadores: 
+Formato, reglas e idempotencia en shared/contracts/identifiers.md
+
+### D17. Metadatos de artefactos
+Especificación v0 en shared/contracts/artifact-metadata.md; el esquema validable se deriva de ella.
+
+### D18. Almacenamiento local
+Disposición, escritura segura y materialización por copia en shared/data_access/README.md
+
+### D19. Validación por registro de tipos
+Las reglas de metadatos se validan en código a partir de shared/contracts/artifact-types.json; sin JSON Schema por ahora.
+
 ## Abiertas
 
 | Tema | Se decide en |
@@ -71,3 +94,4 @@ Formato: decisión, motivo y consecuencias. Fecha de la última revisión: 2026-
 | Número de procesos del predictor como parámetro explícito | Paso 7 (predictor) |
 | Versiones fijadas del entorno de TensorFlow | Paso 7 (trainer y predictor) |
 | Por qué la generación produjo 76 casos y no ~101 | Paso 7 (predictor); ver `docs/baseline/BASELINE.md` |
+| Autenticación entre componentes | sin ella por ahora, porque todo corre en local; se decide cuando haya componentes en máquinas distintas |

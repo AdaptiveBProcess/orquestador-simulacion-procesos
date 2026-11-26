@@ -1,0 +1,98 @@
+{
+  "schema_version": "0",
+  "statuses": [
+    "completo",
+    "parcial",
+    "fallido"
+  ],
+  "scenarios": [
+    "AS-IS",
+    "TO-BE"
+  ],
+  "types": {
+    "declarative.event_log": {
+      "log_name": "required",
+      "scenario": "forbidden",
+      "rule": "forbidden",
+      "variant": "forbidden"
+    },
+    "declarative.rules": {
+      "log_name": "required",
+      "scenario": "forbidden",
+      "rule": "required",
+      "variant": "forbidden"
+    },
+    "declarative.embeddings": {
+      "log_name": "required",
+      "scenario": "forbidden",
+      "rule": "forbidden",
+      "variant": "forbidden"
+    },
+    "declarative.model_package": {
+      "log_name": "required",
+      "scenario": "forbidden",
+      "rule": "forbidden",
+      "variant": "forbidden"
+    },
+    "declarative.optimization_results": {
+      "log_name": "required",
+      "scenario": "forbidden",
+      "rule": "forbidden",
+      "variant": "forbidden"
+    },
+    "declarative.generated_log": {
+      "log_name": "required",
+      "scenario": "forbidden",
+      "rule": "required",
+      "variant": "required"
+    },
+    "declarative.prediction_diagnostics": {
+      "log_name": "required",
+      "scenario": "forbidden",
+      "rule": "required",
+      "variant": "required"
+    },
+    "declarative.simod_config": {
+      "log_name": "required",
+      "scenario": "required",
+      "rule": "forbidden",
+      "variant": "forbidden"
+    },
+    "declarative.simulation_model": {
+      "log_name": "required",
+      "scenario": "required",
+      "rule": "forbidden",
+      "variant": "forbidden"
+    },
+    "declarative.merged_model": {
+      "log_name": "required",
+      "scenario": "forbidden",
+      "rule": "required",
+      "variant": "forbidden"
+    },
+    "declarative.bimp_model": {
+      "log_name": "required",
+      "scenario": "forbidden",
+      "rule": "required",
+      "variant": "forbidden"
+    },
+    "declarative.simulation_result": {
+      "log_name": "required",
+      "scenario": "forbidden",
+      "rule": "required",
+      "variant": "forbidden"
+    },
+    "example.note": {
+      "log_name": "optional",
+      "scenario": "forbidden",
+      "rule": "forbidden",
+      "variant": "forbidden"
+    },
+    "example.report": {
+      "log_name": "optional",
+      "scenario": "forbidden",
+      "rule": "forbidden",
+      "variant": "forbidden"
+    }
+  }
+}
