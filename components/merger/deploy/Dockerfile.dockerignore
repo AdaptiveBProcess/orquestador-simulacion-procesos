@@ -1,0 +1,6 @@
+# Solo shared/ y components/ entran al contexto de construcción.
+*
+!shared
+!components
+**/__pycache__
+**/*.pyc

@@ -101,6 +101,19 @@ Un contenedor por servicio, volumen con nombre para el almacén (no carpeta de W
 - El fallo conserva evidencia parcial
 - `train_log_path` se reescribe para desacoplar la configuración del nombre del log
 
+### D25. Prosimos como componente
+- Una tarea (simular) sobre el TO-BE fusionado
+- El éxito se verifica por los archivos de salida, el archivo de avisos es opcional y se limpia antes de cada ejecución.
+
+### D26. Ejecución de programas externos en shared/runtime/process.py
+- Lo usan Prosimos y BIMP. Simod conserva su propio ejecutor porque ya está verificado con el programa real.
+- Migrarlo a process.py es opcional y se hará cuando se toque.
+
+### D27. Merger como componente
+- Lógica copiada de legacy/ con encabezado de origen
+- Tercera entrada regla para la metainformación
+- Tareas sin pareja registradas en attributes
+
 ## Abiertas
 
 | Tema | Se decide en |
@@ -117,3 +130,4 @@ Un contenedor por servicio, volumen con nombre para el almacén (no carpeta de W
 | Autenticación entre componentes | sin ella por ahora, porque todo corre en local; se decide cuando haya componentes en máquinas distintas |
 | Tiempo parada de Contenedores | Tiempo de espera de parada de los contenedores de entrenamiento (docker stop), paso 6.8 |
 | Simod | Simod como usuario sin privilegios |
+| Permisos en las Imagenes Docker | Usuario común (uid fijo) en todas las imágenes de componentes; hoy Simod, Prosimos y Merger corren como root |

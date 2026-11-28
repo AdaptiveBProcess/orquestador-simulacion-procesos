@@ -47,6 +47,37 @@ services:
       start_period: 10s
     ports:
       - "127.0.0.1:8003:8000"
+  prosimos:
+    build:
+      context: ../..
+      dockerfile: components/prosimos/deploy/Dockerfile
+    image: orq-prosimos:local
+    volumes:
+      - store:/data/store
+    stop_grace_period: ${ORQ_STOP_GRACE_PROSIMOS:-60s}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "127.0.0.1:8004:8000"
+  merger:
+    build:
+      context: ../..
+      dockerfile: components/merger/deploy/Dockerfile
+    image: orq-merger:local
+    volumes:
+      - store:/data/store
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    ports:
+      - "127.0.0.1:8005:8000"
 
 volumes:
   store:
