@@ -1,6 +1,6 @@
 """Cómo un componente se describe ante el cascarón de servicio.
 
-Un adaptador declara, por cada tarea: entradas, parámetros (con defecto),
+Un adaptador declara, por cada tarea: entradas, parámetros,
 salidas y la función que hace el trabajo. El runtime se encarga de todo lo
 demás (validar, materializar entradas, verificar salidas, registrar, responder).
 """

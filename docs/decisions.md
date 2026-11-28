@@ -94,6 +94,13 @@ Productor y consumidor en shared/runtime/examples/, fuera de components/, para v
 ### D23. Composición local
 Un contenedor por servicio, volumen con nombre para el almacén (no carpeta de Windows montada), usuario sin privilegios, puertos solo en 127.0.0.1; ver infra/local/README.md
 
+### D24. Simod como componente
+- Dos tareas (AS-IS y TO-BE) porque cada entrada del runtime admite un solo tipo
+- Simod se ejecuta como subproceso en una imagen derivada de nokal/simod
+- El modelo se entrega aplanado desde best_result 
+- El fallo conserva evidencia parcial
+- `train_log_path` se reescribe para desacoplar la configuración del nombre del log
+
 ## Abiertas
 
 | Tema | Se decide en |
@@ -109,3 +116,4 @@ Un contenedor por servicio, volumen con nombre para el almacén (no carpeta de W
 | Por qué la generación produjo 76 casos y no ~101 | Paso 7 (predictor); ver `docs/baseline/BASELINE.md` |
 | Autenticación entre componentes | sin ella por ahora, porque todo corre en local; se decide cuando haya componentes en máquinas distintas |
 | Tiempo parada de Contenedores | Tiempo de espera de parada de los contenedores de entrenamiento (docker stop), paso 6.8 |
+| Simod | Simod como usuario sin privilegios |

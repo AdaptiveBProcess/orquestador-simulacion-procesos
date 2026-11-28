@@ -104,3 +104,5 @@ Cada uno es un error con tipo propio, que el runtime convierte en un error de ta
 ## Otros respaldos
 
 Un respaldo remoto implementa las mismas cinco operaciones. Las referencias, los metadatos y el contrato no cambian.
+
+ingest.py: python -m shared.data_access.ingest registra una carpeta del usuario como artefacto (productor usuario) e imprime su referencia.

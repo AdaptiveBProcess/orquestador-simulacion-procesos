@@ -1,32 +1,34 @@
 # Componente: Simod
 
 **Propósito:** descubrir un modelo de simulación de procesos (BPMN y parámetros) a partir de un log de eventos.
-**Tarea:** `simod.descubrir_modelo` (se usa dos veces por corrida: escenario AS-IS y escenario TO-BE).
-**Código original que envuelve:** `generate_bps_model` (Simod en Docker, imagen `nokal/simod`).
+**Tareas:** `simod.descubrir_asis` (log original) y `simod.descubrir_tobe` (log generado). Misma lógica; cada tarea acepta un solo tipo de log.
+**Herramienta:** `poetry run simod`, ejecutado como subproceso dentro del contenedor.
 
 ## Entradas
-- `declarative.event_log` (escenario AS-IS) o `declarative.generated_log` (escenario TO-BE).
-- `declarative.simod_config`.
+- `log`: `declarative.event_log` (AS-IS) o `declarative.generated_log` (TO-BE). Se acepta `.csv.gz` o `.csv`; si es `.csv` se comprime.
+- `config`: `declarative.simod_config`, con exactamente un archivo `.yaml`.
 
-## Parámetros
-- La configuración de Simod (`configuration_original.yaml` o `configuration_generated.yaml`). Hay un ejemplo en `docs/example/configuration.yaml` del repo original; en la línea base se usaron copias sin cambios.
+## Parámetros (defecto)
+- `min_casos` (5): mínimo de casos del log.
+- `timeout_segundos` (3600): tiempo máximo de Simod.
+- `conservar_parcial` (true): registrar como parcial lo producido si Simod falla.
 
 ## Salidas
-- `declarative.simulation_model` con su escenario (AS-IS o TO-BE).
+- `modelo`: `declarative.simulation_model` con el escenario de la tarea. Contiene el contenido de `best_result` en la raíz (BPMN, JSON de recursos, `canonical_model.json`, `configuration.yaml`, `runtimes.json`, métricas). `attributes` lleva `model_name`, `bpmn_file` y `json_file`.
 
 ## Precondiciones
-- La configuración existe (sin ella Simod falla).
-- El log tiene suficientes casos para que la partición 80/20 deje casos de validación. Con 4 casos falló.
-- El original entrega el log comprimido (`.csv.gz`).
+- El log y la configuración existen y son únicos; la configuración define `common.train_log_path`.
+- El log tiene al menos `min_casos` casos (la columna de caso sale de `common.log_ids.case`).
+- Existe el comando de Simod y su directorio de trabajo.
 
-## Recursos
-- Docker con la imagen `nokal/simod`.
-
-## Notas de la línea base
-- Un fallo deja carpetas con `best_result` vacío: se registran como artefacto `parcial` o `fallido`.
+## Comportamiento ante fallos
+- Código distinto de 0: tarea `fallida` (`simod_failed`) con el final de la salida de Simod; la carpeta de la corrida se registra como `parcial`.
+- Código 0 sin `best_result` completo: `fallida` (`missing_output`), evidencia `parcial`.
+- Supera el tiempo límite: `fallida` (`timeout`).
 
 ## Despliegue
 - **Versión del contrato:** v0.
-- **Imagen:** parte de `nokal/simod`; el programa se invoca directamente (sin `docker run`).
-- **Toma de `legacy/`:** solo la forma en que `generate_bps_model` invoca a Simod (argumentos y archivos de entrada y salida).
-- **Parches:** ninguno.
+- **Imagen:** parte de `nokal/simod` (Python 3.11 en `/opt/venv`, con PyYAML); ejecuta Simod como subproceso, sin Docker dentro de Docker.
+- **Toma de `legacy/`:** nada; solo la forma de invocar a Simod (`--configuration`, `--output`).
+- **Variables:** `ORQ_SIMOD_HOME` (`/usr/src/Simod`) y `ORQ_SIMOD_COMMAND` (`poetry run simod`).
+- **Recursos:** 1 tarea simultánea. Corre como root (usuario de la imagen base).
